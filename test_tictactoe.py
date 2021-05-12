@@ -13,7 +13,7 @@ def test_print_board():
 def test_insert_player_move():
     # need to ensure that there is something in this location in the game board to test this out
     # (or not if testing for True)
-    result = insert_player_move(8, 'X')
+    result = insert_player_move(10, 'X')
     assert result == False
 
 
