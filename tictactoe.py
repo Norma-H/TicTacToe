@@ -19,7 +19,6 @@ def print_board():
     return '\n'.join(rows)
 
 
-
 def insert_player_move(location, player):
     """ This function takes in the entered location for X/O placement and the player whose placing their piece.
         It checks to see if the location is a number 1 through 9 and if not, it returns False.
@@ -82,32 +81,21 @@ def main():
     while playing:
         for one_player in ['X', 'O']:  # alternating turns between players
             print(print_board())
-            player_input = int(input(f'Player {one_player}, what is your move? '))  # converting player's input into int
+            player_input = int(input(f'Player {one_player}, what is your move? ').strip())  # converting player's input into int
             status = play_game(player_input, one_player)  # placing the piece, determining game status
-            if status == 1:  # the player didn't enter a valid or empty location on the board
-                while status == 1:  # keep asking the player until it is a valid/empty location entry
-                    print('Please pick a valid and empty space.')
-                    player_input = int(input(f'Player {one_player}, what is your move? '))
-                    status = play_game(player_input, one_player)  # once valid, 'status' changes and breaks out of loop
-                continue  # continue with the if/elif statement since 'status' is now changed
-            elif type(status) == str:  # the game is over if a string statement was returned
-                playing = False  # game is over... want to break out of loop
+            while status == 1:  # keep asking the player until it is a valid/empty location entry
+                print('Please pick a valid and empty space.')
+                player_input = int(input(f'Player {one_player}, what is your move? ').strip())
+                status = play_game(player_input, one_player)  # once valid, 'status' changes and breaks out of loop
+            if type(status) == str:  # the game is over if a string statement was returned
+                playing = False  # want to break out of outer loop
                 print(print_board())
                 print(status)
                 break
-            elif not status:  # game is not over
+            elif not status:  # if it is False --> game is not over
                 continue
 
 
 if __name__ == '__main__':
     main()
 
-# Board[1] = 'X'
-# Board[2] = 'O'
-# Board[3] = 'X'
-# Board[4] = 'X'
-# Board[5] = ' '
-# Board[6] = 'O'
-# Board[7] = 'O'
-# Board[8] = 'O'
-# Board[9] = 'X'
