@@ -81,12 +81,19 @@ def game_status(location, player):
 
 
 def play_game():
+    """ This function is for playing the game.
+        It contains a while loop that continues until the game is over and a for loop for alternating player turns.
+        It calls the print_board function before each new turn and asks for each player's input.
+        It calls the game_status function and based on the return value does one of three options:
+        (1) continuously asks the user for valid input if it was invalid, (2) prints the winner/tie statement and ends
+        the game, or (3) continues the game if it is not over
+        The function returns the outcome of the game."""
     playing = True
     while playing:
         for one_player in ['X', 'O']:  # alternating turns between players
             print(print_board())
             player_input = ''
-            while not player_input.isdigit():  # ensuring the user enters a digit
+            while not player_input.isdigit():  # validate the user input a digit
                 player_input = input(f'Player {one_player}, what is your move? ').strip()
             status = game_status(int(player_input), one_player)  # placing the piece, determining game status
             while 're-enter' in status:  # keep asking the player until it is a valid/empty location entry
