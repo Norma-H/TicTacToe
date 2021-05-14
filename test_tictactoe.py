@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from tictactoe import print_board, insert_player_move, winner_outcome, play_game
+from tictactoe import print_board, insert_player_move, winner_outcome, game_status
 
 
 def test_print_board():
@@ -18,11 +18,23 @@ def test_insert_player_move():
 
 
 def test_winner_outcome():
-    winner = 'Player X is the winner!'
+    winner = 4
     result = winner_outcome()
     assert result == winner
 
 
-def test_play_game():
-    result = play_game(5, 'O')
-    assert result == 'That space is already taken. Please pick an empty space.'
+def test_game_status():
+    result = game_status(2, 'X')
+    assert result == 'continue'
+
+
+# for the tictactoe.py file for when testing functions
+# Board[1] = 'X'
+# Board[2] = ' '
+# Board[3] = 'X'
+# Board[4] = ' '
+# Board[5] = 'O'
+# Board[6] = 'O'
+# Board[7] = 'O'
+# Board[8] = 'X'
+# Board[9] = 'X'
