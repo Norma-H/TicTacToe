@@ -38,64 +38,76 @@ def insert_player_move(location, player):
 def winner_outcome():
     """ This function checks to see if there is a winner, a tie, or if the game is still going on.
         It goes through each set of 3 locations that would be a winning combination (listed in the options variable).
-        If X or O is found in all three locations of a set, the function returns a statement indicating the winner.
-        If there is no winner and at least one empty location, the function returns False indicating the game isn't over.
-        If all the locations are filled and there was no winner, the function returns a statement indicating a tie."""
+        The function returns an integer (1 through 4) corresponding to each of the 4 return options:
+        If X or O is found in all three locations of a set, the function returns integer 1 or 2, respectively.
+        If there is no winner and at least one empty location, the function returns integer 3, indicating the game isn't over.
+        If all the locations are filled and there was no winner, the function returns integer 4, indicating a tie."""
     options = [[Board[1], Board[2], Board[3]], [Board[4], Board[5], Board[6]], [Board[7], Board[8], Board[9]],
                [Board[1], Board[5], Board[9]], [Board[2], Board[5], Board[8]], [Board[3], Board[5], Board[7]],
                [Board[3], Board[6], Board[9]], [Board[1], Board[4], Board[7]]]
     for one_set in options:
         if 'X' == one_set[0] and 'X' == one_set[1] and 'X' == one_set[2]:
-            return 'Player X is the winner!'
+            return 1  # X is the winner
         elif 'O' == one_set[0] and 'O' == one_set[1] and 'O' == one_set[2]:
-            return 'Player O is the winner!'
-    else:
-        if ' ' in Board.values():
-            return False  # the game is not over
+            return 2  # O is the winner
+    else:  # if there is no winner
+        if ' ' in Board.values():  # still empty spaces
+            return 3  # the game is not over
         else:
-            return 'It is a tie!'
+            return 4  # no empty spaces --> tie game
 
 
-def play_game(location, player):
+def game_status(location, player):
     """ This function takes in the entered location for X/O placement and the player whose placing their piece.
         It calls the insert_player_move function and receives a returned value of True or False.
-        If the value is True, it calls the winner_outcome function to check the status of the game and if the game
-        is over, this function returns the outcome of the game. If winner_outcome returns False, this function returns
-        False and the game continues.
-        If insert_player_move returns False, this function returns the integer 1, indicating that the player needs to
-        re-enter a location"""
+        If the received value is True, it calls the winner_outcome function to check the status of the game.
+        This function returns a string. Four of the string values are based on the value from winner_outcome indicating:
+        (1) X is the winner, (2) O is the winner, (3) the game continues, or (4) tie game
+        If insert_player_move returns False, this function returns a string indicating that the player needs to
+        re-enter a location."""
     status = insert_player_move(location, player)
     if status:
         outcome = winner_outcome()
-        if outcome:
-            return outcome  # the game is over
-        else:
-            return False  # continue playing the game
+        if outcome == 1:
+            return 'Player X is the winner!'
+        elif outcome == 2:
+            return 'Player O is the winner!'
+        elif outcome == 3:
+            return 'continue'  # continue playing the game
+        elif outcome == 4:
+            return 'It is a tie!'
     else:
-        return 1  # player needs to enter a new / empty location
+        return 're-enter'  # player needs to enter a new / empty location
 
 
-def main():
-    print(explanation_statement)
+def play_game():
     playing = True
     while playing:
         for one_player in ['X', 'O']:  # alternating turns between players
             print(print_board())
-            player_input = int(input(f'Player {one_player}, what is your move? ').strip())  # converting player's input into int
-            status = play_game(player_input, one_player)  # placing the piece, determining game status
-            while status == 1:  # keep asking the player until it is a valid/empty location entry
+            player_input = ''
+            while not player_input.isdigit():  # ensuring the user enters a digit
+                player_input = input(f'Player {one_player}, what is your move? ').strip()
+            status = game_status(int(player_input), one_player)  # placing the piece, determining game status
+            while 're-enter' in status:  # keep asking the player until it is a valid/empty location entry
                 print('Please pick a valid and empty space.')
                 player_input = int(input(f'Player {one_player}, what is your move? ').strip())
-                status = play_game(player_input, one_player)  # once valid, 'status' changes and breaks out of loop
-            if type(status) == str:  # the game is over if a string statement was returned
+                status = game_status(player_input, one_player)  # once valid, 'status' changes and breaks out of loop
+            if 'winner' in status or 'tie' in status:  # the game is over if a string statement was returned
                 playing = False  # want to break out of outer loop
                 print(print_board())
-                print(status)
+                game_over = status
                 break
-            elif not status:  # if it is False --> game is not over
+            elif 'continue' in status:  # game is not over
                 continue
+    return game_over
+
+
+def main():
+    print(explanation_statement)
+    end_outcome = play_game()
+    print(end_outcome)
 
 
 if __name__ == '__main__':
     main()
-
