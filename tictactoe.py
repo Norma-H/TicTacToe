@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import random
+
+
 Board = {1: ' ', 2: ' ', 3: ' ', 4: ' ', 5: ' ', 6: ' ', 7: ' ', 8: ' ', 9: ' '}
 explanation_statement = f"To play the game, Players X and O will take turns entering in their moves. Each move will " \
                         f"be a number 1 through 9.\nThe locations on the board correspond with the numbers as follows:\n" \
@@ -88,13 +91,27 @@ def play_game():
         (1) continuously asks the user for valid input if it was invalid, (2) prints the winner/tie statement and ends
         the game, or (3) continues the game if it is not over
         The function returns the outcome of the game."""
+    computer_status = None
+    while computer_status != 'y' and computer_status != 'n':
+        computer_status = input("Would you like to play against a computer? (y/n) ").strip()
+        print(computer_status)
     playing = True
+    avail_spots = [1,2,3,4,5,6,7,8,9]
     while playing:
         for one_player in ['X', 'O']:  # alternating turns between players
             print(print_board())
-            player_input = ''
-            while not player_input.isdigit():  # validate the user input a digit
-                player_input = input(f'Player {one_player}, what is your move? ').strip()
+            if computer_status == 'y':
+                if one_player == 'X':
+                    player_input = ''
+                    while not player_input.isdigit():  # validate the user input a digit
+                        player_input = input(f'Player {one_player}, what is your move? ').strip()
+                elif one_player == 'O':
+                    player_input = random.choice(avail_spots)
+                    print(f'Player {one_player} placed a piece at location {player_input}.')
+            elif computer_status == 'n':
+                player_input = ''
+                while not player_input.isdigit():  # validate the user input a digit
+                    player_input = input(f'Player {one_player}, what is your move? ').strip()
             status = game_status(int(player_input), one_player)  # placing the piece, determining game status
             while 're-enter' in status:  # keep asking the player until it is a valid/empty location entry
                 print('Please pick a valid and empty space.')
@@ -106,6 +123,7 @@ def play_game():
                 game_over = status
                 break
             elif 'continue' in status:  # game is not over
+                avail_spots.remove(int(player_input))
                 continue
     return game_over
 
