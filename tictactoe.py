@@ -2,7 +2,6 @@
 
 import random
 
-
 Board = {1: ' ', 2: ' ', 3: ' ', 4: ' ', 5: ' ', 6: ' ', 7: ' ', 8: ' ', 9: ' '}
 explanation_statement = f"To play the game, Players X and O will take turns entering in their moves. Each move will " \
                         f"be a number 1 through 9.\nThe locations on the board correspond with the numbers as follows:\n" \
@@ -83,6 +82,22 @@ def game_status(location, player):
         return 're-enter'  # player needs to enter a new / empty location
 
 
+def get_player_input(one_player, avail_spots, computer_status='n'):
+    if computer_status == 'y':
+        if one_player == 'X':
+            player_input = ''
+            while not player_input.isdigit():  # validate the user input a digit
+                player_input = input(f'Player {one_player}, what is your move? ').strip()
+        elif one_player == 'O':
+            player_input = random.choice(avail_spots)
+            print(f'Player {one_player} placed a piece at location {player_input}.')
+    elif computer_status == 'n':
+        player_input = ''
+        while not player_input.isdigit():  # validate the user input a digit
+            player_input = input(f'Player {one_player}, what is your move? ').strip()
+    return int(player_input)
+
+
 def play_game():
     """ This function is for playing the game.
         It contains a while loop that continues until the game is over and a for loop for alternating player turns.
@@ -96,26 +111,15 @@ def play_game():
         computer_status = input("Would you like to play against a computer? (y/n) ").strip()
         print(computer_status)
     playing = True
-    avail_spots = [1,2,3,4,5,6,7,8,9]
+    avail_spots = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     while playing:
         for one_player in ['X', 'O']:  # alternating turns between players
             print(print_board())
-            if computer_status == 'y':
-                if one_player == 'X':
-                    player_input = ''
-                    while not player_input.isdigit():  # validate the user input a digit
-                        player_input = input(f'Player {one_player}, what is your move? ').strip()
-                elif one_player == 'O':
-                    player_input = random.choice(avail_spots)
-                    print(f'Player {one_player} placed a piece at location {player_input}.')
-            elif computer_status == 'n':
-                player_input = ''
-                while not player_input.isdigit():  # validate the user input a digit
-                    player_input = input(f'Player {one_player}, what is your move? ').strip()
-            status = game_status(int(player_input), one_player)  # placing the piece, determining game status
+            player_input = get_player_input(one_player, avail_spots, computer_status)
+            status = game_status(player_input, one_player)  # placing the piece, determining game status
             while 're-enter' in status:  # keep asking the player until it is a valid/empty location entry
                 print('Please pick a valid and empty space.')
-                player_input = int(input(f'Player {one_player}, what is your move? ').strip())
+                player_input = get_player_input(one_player, avail_spots)
                 status = game_status(player_input, one_player)  # once valid, 'status' changes and breaks out of loop
             if 'winner' in status or 'tie' in status:  # the game is over if a string statement was returned
                 playing = False  # want to break out of outer loop
@@ -123,7 +127,7 @@ def play_game():
                 game_over = status
                 break
             elif 'continue' in status:  # game is not over
-                avail_spots.remove(int(player_input))
+                avail_spots.remove(player_input)
                 continue
     return game_over
 
