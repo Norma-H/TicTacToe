@@ -1,6 +1,6 @@
 # TicTacToe
 
-To run the program from the terminal the user will run the tic tac toe file from the command line. 
+To run the program in the terminal the user will run the tic tac toe file from the command line. 
 ```
 python3 tictactoe.py
 ```
